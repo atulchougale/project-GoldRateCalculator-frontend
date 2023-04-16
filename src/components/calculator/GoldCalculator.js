@@ -62,12 +62,12 @@ function GoldCalculator() {
 
     
 console.log(data.data.price_gram_24k)
-    // const k24 = data.data.price_gram_24k
-    // const k22 = data.data.price_gram_22k
-    // const k21 = data.data.price_gram_21k
-    // const k20 = data.data.price_gram_20k
-    // const k18 = data.data.price_gram_18k
-    // console.log(k24)
+    const k24 = data.data.price_gram_24k
+    const k22 = data.data.price_gram_22k
+    const k21 = data.data.price_gram_21k
+    const k20 = data.data.price_gram_20k
+    const k18 = data.data.price_gram_18k
+    console.log(k24)
 
     useEffect(() => {
 
