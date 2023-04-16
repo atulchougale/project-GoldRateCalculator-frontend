@@ -23,18 +23,22 @@ function Register() {
     validate : registerValidation,
     validateOnBlur:false,
     validateOnChange:false,
-  onSubmit: async values =>{
-    values = await Object.assign(values,{profile : file || ''})
-    // console.log(values)
-    let registerPromise = registerUser(values)
-    toast.promise(registerPromise,{
-      loading:'Creating ...!',
-      success:<b>Register Successfully...!</b>,
-      error:<b>Could not Register.</b>
-    })
-    registerPromise.then(function(){ navigate('/')});
-
-  },
+    onSubmit: async values => {
+      values = await Object.assign(values, { profile: file || '' });
+      let registerPromise = registerUser(values);
+      
+      toast.promise(registerPromise, {
+        loading: 'Creating ...!',
+        success: <b>Register Successfully...!</b>,
+        error: <b>Could not Register.</b>
+      });
+      
+      registerPromise.then(() => {
+        navigate('/');
+      }).catch((error) => {
+        console.lo(error)
+      });
+    }
   });
 
 

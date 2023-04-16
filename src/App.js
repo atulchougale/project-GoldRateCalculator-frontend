@@ -15,11 +15,18 @@ import Reset from './components/user/Reset';
 import PageNotFound from './components/PageNotFound';
 import GoldCalculator from './components/calculator/GoldCalculator';
 import Header from './components/Header';
+import Contact from './components/contact';
+import About from './components/about';
+import Home from './components/homePage';
+import Footer from './components/Footer';
+
+/** auth middleware */
+import { AuthorizeUser,ProtectRoute } from './middleware/auth';
 
 // root routers
 const router = createBrowserRouter([
   {
-    path:'/',
+    path:'/login',
     element:<Username></Username>
   },
   {
@@ -28,11 +35,11 @@ const router = createBrowserRouter([
   },
   {
     path:'/profile',
-    element:<Profile></Profile>
+    element: <AuthorizeUser><Profile/></AuthorizeUser>
   },
   {
     path:'/password',
-    element:<Password></Password>
+    element: <ProtectRoute><Password/></ProtectRoute> 
   },
   {
     path:'/recovery',
@@ -48,7 +55,19 @@ const router = createBrowserRouter([
   },
   {
     path:'/calculator',
-    element:<GoldCalculator/>
+    element:<AuthorizeUser><GoldCalculator/></AuthorizeUser>
+  },
+  {
+    path:'/contact',
+    element:<Contact/>
+  },
+  {
+    path:'/about',
+    element:<About/>
+  },
+  {
+    path:'/',
+    element:<Home/>
   }
 ])
 
@@ -60,6 +79,7 @@ function App() {
     <main >
     <Header />
     <RouterProvider router={router}></RouterProvider>
+    <Footer/>
    
      
     </main>
@@ -69,19 +89,5 @@ function App() {
 export default App;
 
 
-// import About from './About';
-// import Contact from './Contact';
-
-// function App() {
-//   return (
-//     <Router>
-      
-//       <Switch>
-//         <Route path="/about" component={About} />
-//         <Route path="/contact" component={Contact} />
-//       </Switch>
-//     </Router>
-//   );
-// }
 
 

@@ -1,31 +1,44 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate} from 'react-router-dom';
 import avatar from '../../Images/profile.png';
 import styles from '../../styles/Username.module.css'
 import extend from '../../styles/Profile.module.css';
-import { Toaster } from 'react-hot-toast';
+import toast,{ Toaster } from 'react-hot-toast';
 import { useFormik } from 'formik';
 import { profileValidation } from '../../helper/validate';
 import convertToBase64 from '../../helper/convert';
+import useFetch from '../../hooks/fetch.hook';
+
+import { updateUser } from '../../helper/helper';
+
 
 function Profile() {
-
+  const navigate = useNavigate();
   const [file,setFile]= useState()
+  const [{isLoading,apiData,serverError}]=useFetch()
 
   const formik = useFormik({
     initialValues :{
-      firstName :'',
-      lastName: '',
-      email: '',
-      mobile: '',
-      address :  ''
+      firstName : apiData?.firstName || '',
+      lastName: apiData?.lastName || '',
+      email: apiData?.email || '',
+      mobile: apiData?.mobile || '',
+      address : apiData?.address || ''
     },
+    enableReinitialize: true,
     validate : profileValidation,
     validateOnBlur:false,
     validateOnChange:false,
   onSubmit: async values =>{
-    values = await Object.assign(values,{profile : file || ''})
-    console.log(values)
+    values = await Object.assign(values,{profile : file || apiData?.profile || ''})
+    let updatePromise = updateUser(values)
+    toast.promise(updatePromise, {
+      loading: 'Updating...',
+      success : <b>Update Successfully...!</b>,
+      error: <b>Could not Update!</b>
+    });
+    // console.log(values)
+
   },
   });
 
@@ -35,6 +48,18 @@ function Profile() {
     const base64 = await convertToBase64(e.target.files[0]);
     setFile(base64);
   }
+
+  if(isLoading) return<h1 className='text-2xl font-bold'>Loading...!</h1>;
+  if(serverError) return <h1 className='text-xl text-red-500'>{serverError.message}</h1>;
+
+  
+  // logout handler function
+  function userLogout(){
+    localStorage.removeItem('token');
+    navigate('/')
+  }
+
+
   return (
 
     <div className="container mx-auto" >
@@ -50,7 +75,7 @@ function Profile() {
           <form action=""  onSubmit={formik.handleSubmit} >
             <div className="profile flex justify-center py-2">
             <label htmlFor="profile">
-              <img src={file || avatar} className={`${styles.profile_img} ${extend.profile_img}`} alt="avatar" />
+              <img src={apiData?.profile || file || avatar} className={`${styles.profile_img} ${extend.profile_img}`} alt="avatar" />
             </label>
             <input onChange={onUpload} type="file"  id="profile" name='profile' />
             </div>
@@ -74,7 +99,7 @@ function Profile() {
               </div>
 
               <div className="text-center py-4">
-                <span className='text-gray-500'>come back later? <button  className='text-red-500' to="/">Logout</button></span>
+                <span className='text-gray-500'>come back later? </span> <button  className='border bg-red-500 w-1/4 py-2 rounded-lg text-gray-50 text-xl shadow-sm text-center' onClick={userLogout}>Logout</button>
               </div>
           </form>
         </div>

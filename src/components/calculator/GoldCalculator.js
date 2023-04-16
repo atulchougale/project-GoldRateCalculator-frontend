@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Button, Col, Container, Form, Row } from 'react-bootstrap';
-import { FaCalculator } from 'react-icons/fa';
+
+import { Button, Col, Form, Row } from 'react-bootstrap';
+import { FaCalculator, FaSearch } from 'react-icons/fa';
 
 import 'react-datepicker/dist/react-datepicker.css';
 import Select from 'react-select';
@@ -19,6 +19,11 @@ function GoldCalculator() {
     const [GST, setGST] = useState(0);
     const [id, setId] = useState('');
     const [updates, setUpdates] = useState('');
+    // const [k24, setK24] = useState()
+    // const [k22, setK22] = useState()
+    // const [k21, setK21] = useState()
+    // const [k20, setK20] = useState()
+    // const [k18, setK18] = useState()
 
 
 
@@ -28,10 +33,6 @@ function GoldCalculator() {
         { value: 'GBP', label: 'GBP' },
         { value: 'INR', label: 'INR' },
     ];
-
-
-
-
 
     const [data, setData] = useState([]);
 
@@ -45,50 +46,72 @@ function GoldCalculator() {
 
     };
     const handleClick = () => {
-        fetch(`http://localhost:5000/gold/${currency}`, requestOptions)
+        fetch(`http://localhost:5000/gold/gold/${currency}`, requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result)
                 setData(result)
+                
+
             })
             .catch(error => console.log('error', error));
 
+
     }
 
+
+    
+console.log(data.data.price_gram_24k)
+    // const k24 = data.data.price_gram_24k
+    // const k22 = data.data.price_gram_22k
+    // const k21 = data.data.price_gram_21k
+    // const k20 = data.data.price_gram_20k
+    // const k18 = data.data.price_gram_18k
+    // console.log(k24)
 
     useEffect(() => {
-        setId(data.goldRate._id)
+
+        const actualPrice = weight * karat;
+        const making = (actualPrice * 15) / 100;
+        const gst = ((actualPrice + making) * 3) / 100;
+        const total = actualPrice + making + gst;
+
+        setActualGoldPrice(actualPrice);
+        setMakingCharges(making);
+        setGST(gst);
+        setGoldPrice(total);
+
 
     }, []);
-    console.log(id)
-    const totalGoldPrice =async () => {
-        try {
-            const actualPrice = weight * karat;
-            const making = (actualPrice * 15) / 100;
-            const gst = ((actualPrice + making) * 3) / 100;
-            const total = actualPrice + making + gst;
-    
-            setActualGoldPrice(actualPrice);
-            setMakingCharges(making);
-            setGST(gst);
-            setGoldPrice(total);
-            setUpdates(
-                {
-                    actualGoldPrice:actualGoldPrice,
-                    makingCharges:makingCharges,
-                    GST:GST,
-                    goldPrice:goldPrice
-                }
-            )
-            const res = await axios.put(`/gold/${id}`, updates);
-           
-            console.log(res.data); // you can remove this line, it's just to see the response in the console
-          } catch (err) {
-            console.error(err);
-          }
-        
-      
-    }
+    // console.log(id)
+    // const totalGoldPrice =async () => {
+    //     try {
+    //         const actualPrice = weight * karat;
+    //         const making = (actualPrice * 15) / 100;
+    //         const gst = ((actualPrice + making) * 3) / 100;
+    //         const total = actualPrice + making + gst;
+
+    //         setActualGoldPrice(actualPrice);
+    //         setMakingCharges(making);
+    //         setGST(gst);
+    //         setGoldPrice(total);
+    //         setUpdates(
+    //             {
+    //                 actualGoldPrice:actualGoldPrice,
+    //                 makingCharges:makingCharges,
+    //                 GST:GST,
+    //                 goldPrice:goldPrice
+    //             }
+    //         )
+    //         const res = await axios.put(`/gold/${id}`, updates);
+
+    //         console.log(res.data); // you can remove this line, it's just to see the response in the console
+    //       } catch (err) {
+    //         console.error(err);
+    //       }
+
+
+    // }
 
     return (
         <div className=' justify-content-center GoldCalculator' >
@@ -116,8 +139,8 @@ function GoldCalculator() {
                 </Col>
                 <Col>
                     <Button variant='primary' style={{ marginTop: '33px' }} onClick={handleClick} >
-                        <FaCalculator />
-                        &nbsp;Calculate
+                        <FaSearch />
+                        &nbsp;Find Todays Rate
                     </Button>
                 </Col>
             </Row>
@@ -126,7 +149,7 @@ function GoldCalculator() {
                 <div className="row">
                     <div className="col d-flex justify-content-center">
                         <div className="my-div">
-                            <h3>Todays 24k gold rate = {data.data.price_gram_24k}/g </h3>
+                            <h3>Todays 24k gold rate = {parseInt(k24)}/g </h3>
 
                         </div>
                     </div>
@@ -154,17 +177,16 @@ function GoldCalculator() {
                             onChange={(e) => setKarat(e.target.value)}
                         >
                             <option value=''>Select karat</option>
-                            <option value={data.data.price_gram_22k}>22K</option>
-                            <option value={data.data.price_gram_24k}>24K</option>
-                            <option value={data.data.price_gram_21k}>21K</option>
-                            <option value={data.data.price_gram_20k}>20K</option>
-                            <option value={data.data.price_gram_18k}>18K</option>
+                            <option value={k24}>24K</option>
+                            <option value={k22}>22K</option>
+                            <option value={k21}>21K</option>
+                            <option value={k20}>20K</option>
+                            <option value={k18}>18K</option>
                         </Form.Control>
                     </Form.Group>
                 </Col>
-
                 <Col>
-                    <Button variant='primary' style={{ marginTop: '33px' }} onClick={totalGoldPrice} >
+                    <Button variant='primary' style={{ marginTop: '33px' }}  >
                         <FaCalculator />
                         &nbsp;Calculate
                     </Button>

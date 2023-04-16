@@ -23,7 +23,7 @@ function Password() {
     validateOnBlur:false,
     validateOnChange:false,
   onSubmit: async values =>{
-    console.log(values)
+    // console.log(values)
     let loginPromise = verifyPassword({ username, password : values.password })
     toast.promise(loginPromise, {
       loading: 'Checking...',
@@ -33,8 +33,9 @@ function Password() {
 
     loginPromise.then(res => {
       let { token } = res.data;
+      // console.log(res)
       localStorage.setItem('token', token);
-      navigate('/profile')
+      navigate('/')
     })
   },
   });

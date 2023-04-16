@@ -21,7 +21,7 @@ function Username() {
     validateOnBlur:false,
     validateOnChange:false,
   onSubmit: async values =>{
-    console.log(values)
+    // console.log(values)
     setUsername(values.username);
     navigate('/password') 
   },
