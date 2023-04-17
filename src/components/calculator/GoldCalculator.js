@@ -33,7 +33,7 @@ function GoldCalculator() {
 
     const handleClick = async () => {
         try {
-            const { data } = await axios.get(`/gold/${currency}`);
+            const { data } = await axios.get(`http://localhost:5000/gold/${currency}`);
 
             setId(data.goldRate._id)
             
@@ -51,7 +51,7 @@ function GoldCalculator() {
 
     const calculateGoldPrice = async () => {
         try {
-            const { data } = await axios.post(`/gold/rate/calculate/${id}`, { weight, karat });
+            const { data } = await axios.post(`http://localhost:5000/gold/rate/calculate/${id}`, { weight, karat });
             setGoldData(data.goldData);
         } catch (error) {
             console.log(error)
@@ -60,7 +60,7 @@ function GoldCalculator() {
 
     const deleteData = async () => {
         try {
-            const response = await axios.delete(`/gold/${id}`);
+            const response = await axios.delete(`http://localhost:5000/gold/${id}`);
             console.log(response.data.message);
             navigate('/')
             // Handle success response
