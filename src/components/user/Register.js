@@ -34,7 +34,7 @@ function Register() {
       });
       
       registerPromise.then(() => {
-        navigate('/');
+        navigate('/login');
       }).catch((error) => {
         console.lo(error)
       });
