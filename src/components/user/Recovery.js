@@ -25,7 +25,7 @@ function Recovery() {
         return toast.error('Problem while generating OTP!');
       });
     }
-  }, [username]);
+  }, [username,otpGenerated]);
 
 
   async function onSubmit(e){

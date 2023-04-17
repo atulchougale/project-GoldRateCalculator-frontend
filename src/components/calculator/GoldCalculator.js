@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
-
+import React, { useState, } from 'react';
+import axios from 'axios';
 import { Button, Col, Form, Row } from 'react-bootstrap';
 import { FaCalculator, FaSearch } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 import 'react-datepicker/dist/react-datepicker.css';
 import Select from 'react-select';
@@ -10,22 +11,18 @@ import './GoldCalculator.css';
 
 
 function GoldCalculator() {
-    const [goldPrice, setGoldPrice] = useState(0);
+    const navigate = useNavigate()
+    const [goldData, setGoldData] = useState()
     const [weight, setWeight] = useState('');
     const [karat, setKarat] = useState('');
     const [currency, setCurrency] = useState('');
-    const [actualGoldPrice, setActualGoldPrice] = useState(0);
-    const [makingCharges, setMakingCharges] = useState(0);
-    const [GST, setGST] = useState(0);
-    const [id, setId] = useState('');
-    const [updates, setUpdates] = useState('');
-    // const [k24, setK24] = useState()
-    // const [k22, setK22] = useState()
-    // const [k21, setK21] = useState()
-    // const [k20, setK20] = useState()
-    // const [k18, setK18] = useState()
-
-
+    const [k24, setK24] = useState(0);
+    const [k22, setK22] = useState(0);
+    const [k21, setK21] = useState(0);
+    const [k20, setK20] = useState(0);
+    const [k18, setK18] = useState(0);
+    const [id, setId] = useState();
+    const [data, setData] = useState([]);
 
     const currencyOptions = [
         { value: 'USD', label: 'USD' },
@@ -34,95 +31,57 @@ function GoldCalculator() {
         { value: 'INR', label: 'INR' },
     ];
 
-    const [data, setData] = useState([]);
+    const handleClick = async () => {
+        try {
+            const { data } = await axios.get(`http://localhost:5000/gold/${currency}`);
 
-    const myHeaders = new Headers();
-
-    myHeaders.append("Content-Type", "application/json");
-
-    const requestOptions = {
-        method: 'GET',
-        headers: myHeaders,
-
+            setId(data.goldRate._id)
+            setData(data);
+            setK24(data.data.price_gram_24k);
+            setK22(data.data.price_gram_22k);
+            setK21(data.data.price_gram_21k);
+            setK20(data.data.price_gram_20k);
+            setK18(data.data.price_gram_18k);
+        } catch (error) {
+            console.log(error)
+            setData(null);
+        }
     };
-    const handleClick = () => {
-        fetch(`http://localhost:5000/gold/gold/${currency}`, requestOptions)
-            .then(response => response.json())
-            .then(result => {
-                console.log(result)
-                setData(result)
-                
-
-            })
-            .catch(error => console.log('error', error));
 
 
-    }
+    const calculateGoldPrice = async () => {
+        try {
+            const { data } = await axios.post(`http://localhost:5000/gold/rate/calculate/${id}`, { weight, karat });
+            setGoldData(data.goldData);
+        } catch (error) {
+            console.log(error)
+        }
+    };
 
+    const deleteData = async () => {
+        try {
+            const response = await axios.delete(`http://localhost:5000/gold/${id}`);
+            console.log(response.data.message);
+            navigate('/')
+            // Handle success response
+        } catch (error) {
+            console.error(error);
+            // Handle error response
+        }
+    };
 
-    
-console.log(data.data.price_gram_24k)
-    const k24 = data.data.price_gram_24k
-    const k22 = data.data.price_gram_22k
-    const k21 = data.data.price_gram_21k
-    const k20 = data.data.price_gram_20k
-    const k18 = data.data.price_gram_18k
-    console.log(k24)
-
-    useEffect(() => {
-
-        const actualPrice = weight * karat;
-        const making = (actualPrice * 15) / 100;
-        const gst = ((actualPrice + making) * 3) / 100;
-        const total = actualPrice + making + gst;
-
-        setActualGoldPrice(actualPrice);
-        setMakingCharges(making);
-        setGST(gst);
-        setGoldPrice(total);
-
-
-    }, []);
-    // console.log(id)
-    // const totalGoldPrice =async () => {
-    //     try {
-    //         const actualPrice = weight * karat;
-    //         const making = (actualPrice * 15) / 100;
-    //         const gst = ((actualPrice + making) * 3) / 100;
-    //         const total = actualPrice + making + gst;
-
-    //         setActualGoldPrice(actualPrice);
-    //         setMakingCharges(making);
-    //         setGST(gst);
-    //         setGoldPrice(total);
-    //         setUpdates(
-    //             {
-    //                 actualGoldPrice:actualGoldPrice,
-    //                 makingCharges:makingCharges,
-    //                 GST:GST,
-    //                 goldPrice:goldPrice
-    //             }
-    //         )
-    //         const res = await axios.put(`/gold/${id}`, updates);
-
-    //         console.log(res.data); // you can remove this line, it's just to see the response in the console
-    //       } catch (err) {
-    //         console.error(err);
-    //       }
-
-
-    // }
 
     return (
-        <div className=' justify-content-center GoldCalculator' >
-
+        <div className="justify-content-center GoldCalculator">
             <Row>
-                <Col className=' justify-content-center'>
-                    <h1 className='font-weight-bold text-secondary'>Gold Rate Calculator</h1>
+                <Col className="justify-content-center">
+                    <h1 className="font-weight-bold text-secondary">Gold Rate Calculator</h1>
                 </Col>
             </Row>
-            <Row style={{ marginBottom: '20px' }} >
+            <Row style={{ marginBottom: '20px' }}>
                 <Col>
+
+
                     <h3>Select your Currency </h3>
                 </Col>
                 <Col>
@@ -186,7 +145,7 @@ console.log(data.data.price_gram_24k)
                     </Form.Group>
                 </Col>
                 <Col>
-                    <Button variant='primary' style={{ marginTop: '33px' }}  >
+                    <Button variant='primary' style={{ marginTop: '33px' }} onClick={calculateGoldPrice}>
                         <FaCalculator />
                         &nbsp;Calculate
                     </Button>
@@ -200,7 +159,7 @@ console.log(data.data.price_gram_24k)
                     <div className="col d-flex align-items-center">
                         <div className="my-div">
                             <h1>Gold Price</h1>
-                            <h2>{parseInt(goldPrice)} {currency}</h2>
+                            <h2>{parseInt(goldData?.goldPrice) || 0} {currency}</h2>
 
                         </div>
                     </div>
@@ -217,26 +176,31 @@ console.log(data.data.price_gram_24k)
                 <tbody>
                     <tr>
                         <td>Actual Gold Price </td>
-                        <td>{parseInt(actualGoldPrice)} {currency}</td>
+                        <td>{parseInt(goldData?.actualPrice) || 0} {currency}</td>
                     </tr>
                     <tr>
                         <td>Making Charges (15%)</td>
-                        <td>{parseInt(makingCharges)} {currency}</td>
+                        <td>{parseInt(goldData?.makingCharges) || 0} {currency}</td>
                     </tr>
                     <tr>
                         <td>GST (3%)</td>
-                        <td>{parseInt(GST)} {currency}</td>
+                        <td>{parseInt(goldData?.gst) || 0} {currency}</td>
                     </tr>
                     <tr>
                         <td className="font-weight-bold">Total Gold Price</td>
-                        <td className="font-weight-bold">{parseInt(goldPrice)} {currency}</td>
+                        <td className="font-weight-bold">{parseInt(goldData?.goldPrice) || 0} {currency}</td>
                     </tr>
                 </tbody>
             </table>
 
-
+            <div>
+                <button onClick={deleteData}> Go Back</button>
+            </div>
 
         </div>
+
+
+
 
 
     );

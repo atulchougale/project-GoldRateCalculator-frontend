@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub, faInstagram, faMailchimp } from '@fortawesome/free-brands-svg-icons';
-import { imMail } from "react-icons/fa";
+
 
 
 const Banner = () => (
