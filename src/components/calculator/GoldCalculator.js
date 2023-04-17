@@ -10,6 +10,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './GoldCalculator.css';
 
 
+
 function GoldCalculator() {
     const navigate = useNavigate()
     const [goldData, setGoldData] = useState()
@@ -72,129 +73,121 @@ function GoldCalculator() {
 
 
     return (
-        <div className="justify-content-center GoldCalculator">
-            <Row>
-                <Col className="justify-content-center">
-                    <h1 className="font-weight-bold text-secondary">Gold Rate Calculator</h1>
-                </Col>
-            </Row>
-            <Row style={{ marginBottom: '20px' }}>
-                <Col>
-
-
-                    <h3>Select your Currency </h3>
-                </Col>
-                <Col>
-                    <Form.Group controlId='currency'>
-                        <Form.Label>Currency</Form.Label>
-                        <Select
-                            options={currencyOptions}
-                            value={{ value: currency, label: currency }}
-                            onChange={(option
-                            ) => { setCurrency(option.value) }}
-
-                        />
-                    </Form.Group>
-                </Col>
-                <Col>
-                    <Button variant='primary' style={{ marginTop: '33px' }} onClick={handleClick} >
-                        <FaSearch />
-                        &nbsp;Find Todays Rate
-                    </Button>
-                </Col>
-            </Row>
-
-            <div className="container mt-3 mb-3">
-                <div className="row">
-                    <div className="col d-flex justify-content-center">
-                        <div className="my-div">
-                            <h3>Todays 24k gold rate = {parseInt(k24)}/g </h3>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <Row >
-                <Col>
-                    <Form.Group controlId='weight'>
-                        <Form.Label>Weight (in grams)</Form.Label>
-                        <Form.Control
-                            type='number'
-                            placeholder='Enter weight'
-                            value={weight}
-                            onChange={(e) => setWeight(e.target.value)}
-                        />
-                    </Form.Group>
-                </Col>
-                <Col>
-                    <Form.Group controlId='karat'>
-                        <Form.Label>Karat</Form.Label>
-                        <Form.Control
-                            as='select'
-                            value={karat}
-                            onChange={(e) => setKarat(e.target.value)}
-                        >
-                            <option value=''>Select karat</option>
-                            <option value={k24}>24K</option>
-                            <option value={k22}>22K</option>
-                            <option value={k21}>21K</option>
-                            <option value={k20}>20K</option>
-                            <option value={k18}>18K</option>
-                        </Form.Control>
-                    </Form.Group>
-                </Col>
-                <Col>
-                    <Button variant='primary' style={{ marginTop: '33px' }} onClick={calculateGoldPrice}>
-                        <FaCalculator />
-                        &nbsp;Calculate
-                    </Button>
-                </Col>
-            </Row>
-
-
-
-            <div className="container mt-5">
-                <div className="row">
+        <div className=" container flex flex-col items-center justify-center w-full h-full ">
+        <h1 className="text-3xl font-bold text-center text-blue-700 mb-8 mt-3">Gold Rate Calculator</h1>
+    
+        <div className="flex flex-col md:flex-row items-center justify-between w-3/5 mb-8">
+          <h3 className="text-lg font-medium text-gray-700 md:mr-4 mb-4 md:mb-0">Select your Currency</h3>
+          <div className="w-full md:w-2/5">
+            <label htmlFor="currency" className="block text-gray-700 font-medium mb-2">
+              Currency
+            </label>
+            <Select
+              id="currency"
+              options={currencyOptions}
+              value={{ value: currency, label: currency }}
+              onChange={(option) => setCurrency(option.value)}
+            />
+          </div>
+          <button
+            className="bg-blue-500 text-white font-medium py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors duration-300"
+            onClick={handleClick}
+          >
+            <FaSearch className="inline-block mr-2" />
+            Find Todays Rate
+          </button>
+        </div>
+    
+        <div className="container mx-auto my-8 flex  items-center justify-center">
+          <div className="bg-white shadow-md rounded-lg p-6 w-3/5 ">
+            <h3 className="text-xl font-bold text-green-700 mb-4  text-center">Todays 24k gold rate = {parseInt(k24)}/g</h3>
+          </div>
+        </div>
+    
+        <div className="flex flex-col md:flex-row items-center justify-between w-3/4 mb-8">
+          <div className="w-full md:w-2/5">
+            <label htmlFor="weight" className="block text-gray-700 font-medium mb-2">
+              Weight (in grams)
+            </label>
+            <input
+              type="number"
+              id="weight"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 mb-3"
+              placeholder="Enter weight"
+              value={weight}
+              onChange={(e) => setWeight(e.target.value)}
+            />
+          </div>
+          <div className="w-full md:w-2/5 md:mx-4">
+            <label htmlFor="karat" className="block text-gray-700 font-medium mb-2">
+              Karat
+            </label>
+            <select
+              id="karat"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 mb-3"
+              value={karat}
+              onChange={(e) => setKarat(e.target.value)}
+            >
+              <option value="">Select karat</option>
+              <option value={k24}>24K</option>
+              <option value={k22}>22K</option>
+              <option value={k21}>21K</option>
+              <option value={k20}>20K</option>
+              <option value={k18}>18K</option>
+            </select>
+          </div>
+          <button
+            className="bg-blue-500 text-white font-medium py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors duration-300"
+            onClick={calculateGoldPrice}
+          >
+            <FaCalculator className="inline-block mr-2" />
+            Calculate
+          </button>
+        </div>
+    
+        <div className="container mx-auto my-8 flex  items-center justify-center">
+          <div className="bg-white shadow-md rounded-lg p-6">
                     <div className="col d-flex align-items-center">
                         <div className="my-div">
-                            <h1>Gold Price</h1>
-                            <h2>{parseInt(goldData?.goldPrice) || 0} {currency}</h2>
+                            <h1 className='text-3xl font-bold text-green-700 mb-4  text-center'>Gold Price</h1>
+                            <h2 className='text-3xl font-bold text-green-700 mb-4  text-center'>{parseInt(goldData?.goldPrice) || 0} {currency}</h2>
 
                         </div>
                     </div>
                 </div>
             </div>
 
-            <table className="table table-striped table-dark">
+            <div className='cal'>
+            <table className="table table-striped table-dark " style={{width:'700px'}}>
                 <thead>
                     <tr>
-                        <th scope="col">Description</th>
-                        <th scope="col">Rate ({currency})</th>
+                        <th className='text-center' scope="col">Description</th>
+                        <th className='text-center' scope="col">Rate ({currency})</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Actual Gold Price </td>
-                        <td>{parseInt(goldData?.actualPrice) || 0} {currency}</td>
+                        <td className='text-center'>Actual Gold Price </td>
+                        <td className='text-center'>{parseInt(goldData?.actualPrice) || 0} {currency}</td>
                     </tr>
                     <tr>
-                        <td>Making Charges (15%)</td>
-                        <td>{parseInt(goldData?.makingCharges) || 0} {currency}</td>
+                        <td className='text-center'>Making Charges (15%)</td>
+                        <td className='text-center'>{parseInt(goldData?.makingCharges) || 0} {currency}</td>
                     </tr>
                     <tr>
-                        <td>GST (3%)</td>
-                        <td>{parseInt(goldData?.gst) || 0} {currency}</td>
+                        <td className='text-center'>GST (3%)</td>
+                        <td className='text-center'>{parseInt(goldData?.gst) || 0} {currency}</td>
                     </tr>
                     <tr>
-                        <td className="font-weight-bold">Total Gold Price</td>
-                        <td className="font-weight-bold">{parseInt(goldData?.goldPrice) || 0} {currency}</td>
+                        <td className="font-bold text-center">Total Gold Price</td>
+                        <td className="font-bold text-center">{parseInt(goldData?.goldPrice) || 0} {currency}</td>
                     </tr>
                 </tbody>
             </table>
+            </div>
 
-            <div>
-                <button onClick={deleteData}> Go Back</button>
+            <div className='mt-6'>
+                <button className='bg-red-500 text-white font-medium py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors duration-300' onClick={deleteData}> Go Back</button>
             </div>
 
         </div>
