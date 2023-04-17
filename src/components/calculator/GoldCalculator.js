@@ -1,6 +1,5 @@
 import React, { useState, } from 'react';
 import axios from 'axios';
-import { Button, Col, Form, Row } from 'react-bootstrap';
 import { FaCalculator, FaSearch } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
@@ -23,7 +22,6 @@ function GoldCalculator() {
     const [k20, setK20] = useState(0);
     const [k18, setK18] = useState(0);
     const [id, setId] = useState();
-    const [data, setData] = useState([]);
 
     const currencyOptions = [
         { value: 'USD', label: 'USD' },
@@ -37,7 +35,7 @@ function GoldCalculator() {
             const { data } = await axios.get(`http://localhost:5000/gold/${currency}`);
 
             setId(data.goldRate._id)
-            setData(data);
+            
             setK24(data.data.price_gram_24k);
             setK22(data.data.price_gram_22k);
             setK21(data.data.price_gram_21k);
@@ -45,7 +43,7 @@ function GoldCalculator() {
             setK18(data.data.price_gram_18k);
         } catch (error) {
             console.log(error)
-            setData(null);
+            
         }
     };
 
